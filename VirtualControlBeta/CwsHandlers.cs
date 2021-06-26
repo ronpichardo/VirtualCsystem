@@ -1,4 +1,5 @@
 ﻿using System;
+using Crestron.SimplSharp;
 using Crestron.SimplSharp.WebScripting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -42,6 +43,21 @@ namespace VirtualControlBeta
             {
                 context.Response.Write("{\"status\": \"Settings request handler to implement\"}", true);
             }
+        }
+    }
+
+    public class RoutingRequestHandler: IHttpCwsHandler
+    {
+        public RoutingRequestHandler()
+        {
+            ErrorLog.Error("RoutingHandler has been initialized");
+        }
+
+        void IHttpCwsHandler.ProcessRequest(HttpCwsContext context)
+        {
+            context.Response.StatusCode = 200;
+            context.Response.ContentType = "application/json";
+            context.Response.Write("RequestHandler made it here", true);
         }
     }
 }
