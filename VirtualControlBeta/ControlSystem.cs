@@ -60,14 +60,20 @@ namespace VirtualControlBeta
                 var settingRoute = new HttpCwsRoute("settings");
                 settingRoute.RouteHandler = new ConfigSettingsReqHandler(conf.RoomId, conf.RoomName, conf.ShureIp);
                 _cwsServer.AddRoute(settingRoute);
+
+                var sourceRoute = new HttpCwsRoute("route");
+                sourceRoute.RouteHandler = new RoutingRequestHandler();
+                _cwsServer.AddRoute(sourceRoute);
+
                 _cwsServer.Register();
+
                 // This one returns blank on MC4, but im not using 3-series noise so don't need this path
                 //ErrorLog.Error("ApplicationDirectory: {0}", Directory.GetApplicationDirectory());
                 // This one returns simpl/app01 -> relevant since i'd like to host/serve files from this path
                 ErrorLog.Error("ApplicationRootDirectory: {0}", Directory.GetApplicationRootDirectory());
 
                 mtrDevice = new UcEngine(0x03, this);
-                mtrDevice.Description = "Just a MSTeams Kit";
+                mtrDevice.Description = "UC-MSTeams Kit";
 
                 mtrDevice.ExtenderAudioReservedSigs.Use();
                 mtrDevice.ExtenderEthernetReservedSigs.Use();
@@ -84,8 +90,12 @@ namespace VirtualControlBeta
                 testXpanel.Description = "XPanel for testing VC4";
                 testXpanel.Register();
 
-                fusion = new FusionRoom(0x08, this, "2MVC4Test", "0000");
+                string fusionId = new Guid().ToString();
+                ErrorLog.Error(string.Format("GUID IS LIFE: {0}", fusionId));
+                fusion = new FusionRoom(0x08, this, "2MVC4Test", "9d8c1b65-463f-4e62-89b7-006cd84711a5");
                 fusion.Description = "VirtualControlSharp Test";
+                fusion.OnlineStatusChange += Fusion_OnlineStatusChange;
+                FusionRVI.GenerateFileForAllFusionDevices();
                 fusion.Register();
 
             }
@@ -93,6 +103,11 @@ namespace VirtualControlBeta
             {
                 ErrorLog.Error("Error in InitializeSystem: {0}", e.Message);
             }
+        }
+
+        private void Fusion_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
+        {
+            throw new NotImplementedException();
         }
 
         private void ExtenderEthernetReservedSigs_DeviceExtenderSigChange(DeviceExtender currentDeviceExtender, SigEventArgs args)
@@ -142,6 +157,7 @@ namespace VirtualControlBeta
             {
                 args.Context.Response.StatusCode = 200;
                 args.Context.Response.StatusDescription = "OK";
+                args.Context.Response.ContentType = "application/json";
                 args.Context.Response.Write("{\"status\": \"No post/puts have yet been implemented\"}", true);
             }
             else
