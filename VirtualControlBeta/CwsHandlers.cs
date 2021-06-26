@@ -31,7 +31,6 @@ namespace VirtualControlBeta
                         {
                             { "roomid", _roomId },
                             { "roomname", _roomName },
-                            { "configpage", string.Format("http://100.112.100.207/VirtualControl/Rooms/{0}/Html/serverconf.html", _roomId) },
                             { "mtr-ip", _shureIp }
                         }
                     }
