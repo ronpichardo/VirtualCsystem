@@ -68,9 +68,9 @@ namespace VirtualControlBeta
                 _cwsServer.Register();
 
                 // This one returns blank on MC4, but im not using 3-series noise so don't need this path
-                //ErrorLog.Error("ApplicationDirectory: {0}", Directory.GetApplicationDirectory());
+                //ErrorLog.Error("ApplicationRootDirectory: {0}", Directory.GetApplicationRootDirectory());
                 // This one returns simpl/app01 -> relevant since i'd like to host/serve files from this path
-                ErrorLog.Error("ApplicationRootDirectory: {0}", Directory.GetApplicationRootDirectory());
+                ErrorLog.Error("ApplicationDirectory: {0}", Directory.GetApplicationDirectory());
 
                 mtrDevice = new UcEngine(0x03, this);
                 mtrDevice.Description = "UC-MSTeams Kit";
@@ -91,7 +91,6 @@ namespace VirtualControlBeta
                 testXpanel.Register();
 
                 string fusionId = new Guid().ToString();
-                ErrorLog.Error(string.Format("GUID IS LIFE: {0}", fusionId));
                 fusion = new FusionRoom(0x08, this, "2MVC4Test", "9d8c1b65-463f-4e62-89b7-006cd84711a5");
                 fusion.Description = "VirtualControlSharp Test";
                 fusion.OnlineStatusChange += Fusion_OnlineStatusChange;
