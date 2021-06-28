@@ -1,9 +1,9 @@
 using System;
-using Crestron.SimplSharp;                          	// For Basic SIMPL# Classes
-using Crestron.SimplSharpPro;                       	// For Basic SIMPL#Pro classes
-using Crestron.SimplSharpPro.CrestronThread;        	// For Threading
-using Crestron.SimplSharpPro.Diagnostics;		    	// For System Monitor Access
-using Crestron.SimplSharpPro.DeviceSupport;         	// For Generic Device Support
+using Crestron.SimplSharp;
+using Crestron.SimplSharpPro;
+using Crestron.SimplSharpPro.CrestronThread;
+using Crestron.SimplSharpPro.Diagnostics;
+using Crestron.SimplSharpPro.DeviceSupport;
 using Crestron.SimplSharp.CrestronIO;
 using Crestron.SimplSharp.WebScripting;
 using Crestron.SimplSharpPro.UC;
@@ -70,19 +70,21 @@ namespace VirtualControlBeta
                 // This one returns blank on MC4, but im not using 3-series noise so don't need this path
                 //ErrorLog.Error("ApplicationRootDirectory: {0}", Directory.GetApplicationRootDirectory());
                 // This one returns simpl/app01 -> relevant since i'd like to host/serve files from this path
-                ErrorLog.Error("ApplicationDirectory: {0}", Directory.GetApplicationDirectory());
+                //ErrorLog.Error("ApplicationDirectory: {0}", Directory.GetApplicationDirectory());
 
                 mtrDevice = new UcEngine(0x03, this);
                 mtrDevice.Description = "UC-MSTeams Kit";
 
                 mtrDevice.ExtenderAudioReservedSigs.Use();
                 mtrDevice.ExtenderEthernetReservedSigs.Use();
+                mtrDevice.ExtenderUcEngineReservedSigs.Use();
 
                 mtrDevice.SigChange += MtrDevice_SigChange; ;
 
                 //Reserved sig handler initialization
-                mtrDevice.ExtenderAudioReservedSigs.DeviceExtenderSigChange += ExtenderAudioReservedSigs_DeviceExtenderSigChange; ;
+                mtrDevice.ExtenderAudioReservedSigs.DeviceExtenderSigChange += ExtenderAudioReservedSigs_DeviceExtenderSigChange;
                 mtrDevice.ExtenderEthernetReservedSigs.DeviceExtenderSigChange += ExtenderEthernetReservedSigs_DeviceExtenderSigChange;
+                mtrDevice.ExtenderUcEngineReservedSigs.DeviceExtenderSigChange += ExtenderUcEngineReservedSigs_DeviceExtenderSigChange;
                 mtrDevice.Register();
 
                 testXpanel = new Xpanel(0x04, this);
@@ -104,6 +106,21 @@ namespace VirtualControlBeta
             }
         }
 
+        private void ExtenderUcEngineReservedSigs_DeviceExtenderSigChange(DeviceExtender currentDeviceExtender, SigEventArgs args)
+        {
+            //throw new NotImplementedException();
+            ErrorLog.Error(string.Format("MTR-ExtendedUcEngReserved: {0}", args.Event.ToString()));
+            switch(args.Sig.Type)
+            {
+                case eSigType.Bool:
+                    break;
+                case eSigType.String:
+                    break;
+                case eSigType.UShort:
+                    break;
+            }
+        }
+
         private void Fusion_OnlineStatusChange(GenericBase currentDevice, OnlineOfflineEventArgs args)
         {
             throw new NotImplementedException();
@@ -111,17 +128,31 @@ namespace VirtualControlBeta
 
         private void ExtenderEthernetReservedSigs_DeviceExtenderSigChange(DeviceExtender currentDeviceExtender, SigEventArgs args)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            ErrorLog.Notice(string.Format("MTR-ExtendedEthernetReserved: {0}", mtrDevice.ExtenderEthernetReservedSigs.IpAddressFeedback));
         }
 
         private void ExtenderAudioReservedSigs_DeviceExtenderSigChange(DeviceExtender currentDeviceExtender, SigEventArgs args)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            ErrorLog.Notice(string.Format("MTR-AudioReserved: {0}", args.Sig));
+            switch (args.Sig.Type)
+            {
+                case eSigType.Bool:
+                    if (args.Sig == mtrDevice.ExtenderAudioReservedSigs.ConferenceMicMuteOffFeedback)
+                        ErrorLog.Notice("MTR-MicMuteFeedback: {0}", args.Sig.BoolValue);
+                    break;
+                default:
+                    break;
+            }
+
+
         }
 
         private void MtrDevice_SigChange(BasicTriList currentDevice, SigEventArgs args)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            ErrorLog.Notice(string.Format("MTR-SigChange: {0}", args.Sig.Number.ToString()));
         }
 
         private void TestXpanel_SigChange(BasicTriList currentDevice, SigEventArgs args)
@@ -159,7 +190,7 @@ namespace VirtualControlBeta
                 args.Context.Response.ContentType = "application/json";
                 args.Context.Response.Write("{\"status\": \"No post/puts have yet been implemented\"}", true);
             }
-            else
+            else if (args.Context.Request.HttpMethod == "GET")
             {
                 args.Context.Response.StatusCode = 200;
                 args.Context.Response.StatusDescription = "OK";
@@ -176,6 +207,12 @@ namespace VirtualControlBeta
                 };
                 string jsonResponse = JsonConvert.SerializeObject(resObj);
                 args.Context.Response.Write(jsonResponse, true);
+            }
+            else
+            {
+                args.Context.Response.StatusCode = 501;
+                args.Context.Response.ContentType = "application/text";
+                args.Context.Response.Write("<html><body><h1>No Route Implemented, Internal Error!</h1></body></html>", true);
             }
         }
 
