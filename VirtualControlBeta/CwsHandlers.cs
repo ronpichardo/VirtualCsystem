@@ -57,7 +57,20 @@ namespace VirtualControlBeta
         {
             context.Response.StatusCode = 200;
             context.Response.ContentType = "application/json";
-            context.Response.Write("RequestHandler made it here", true);
+            JObject resObj = new JObject
+            {
+                {
+                    "data", new JObject
+                    {
+                        { "routepath", context.Request.Path },
+                        { "absoluteuri", context.Request.Url.AbsoluteUri },
+                        { "absolutepath", context.Request.Url.AbsolutePath },
+                        { "rawurl", context.Request.RawUrl }
+                    }
+                }
+            };
+            string routeResponse = JsonConvert.SerializeObject(resObj, Formatting.Indented);
+            context.Response.Write(routeResponse, true);
         }
     }
 }
