@@ -1,8 +1,11 @@
 const roomid = document.getElementById('roomid');
 const roomname = document.getElementById('roomname');
 
+let url = window.location.href;
+
 async function getSettings () {
-  let result = await fetch('cws/settings', {
+  let cwsUrl = url.replace('Html/', 'cws/settings')
+  let result = await fetch(cwsUrl, {
     headers: new Headers({ 
     'Content-Type': 'application/json'
   })});
