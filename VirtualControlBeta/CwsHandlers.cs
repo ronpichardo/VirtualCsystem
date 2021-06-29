@@ -9,12 +9,13 @@ namespace VirtualControlBeta
 {
     public class ConfigSettingsReqHandler : IHttpCwsHandler
     {
-        private string _roomId, _roomName, _shureIp;
+        private string _roomId, _roomName, _mtrIp, _shureIp;
 
-        public ConfigSettingsReqHandler(string roomId, string roomName, string shureIp)
+        public ConfigSettingsReqHandler(string roomId, string roomName, string mtrIp, string shureIp)
         {
             this._roomId = roomId;
             this._roomName = roomName;
+            this._mtrIp = mtrIp;
             this._shureIp = shureIp;
         }
 
@@ -32,7 +33,8 @@ namespace VirtualControlBeta
                         {
                             { "roomid", _roomId },
                             { "roomname", _roomName },
-                            { "mtr-ip", _shureIp }
+                            { "mtr-ip", _mtrIp },
+                            { "shureip", _shureIp }
                         }
                     }
                 };
