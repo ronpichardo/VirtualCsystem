@@ -1,0 +1,77 @@
+Add Program
+This method adds a new program to the program library.
+curl -X POST "https://[ServerURL]/VirtualControl/config/api/ProgramLibrary"  \
+-H "accept: application/json" \
+-H "Authorization: [Token]" \
+-H "Content-Type: multipart/form-data" \
+-F "[Parameter]=[Value]"
+
+Modify Program
+This method modifies an existing program in the program library using ProgramId.
+Params are Multipart/Form-Data
+ProgramId - string !required
+FriendlyName - Name of program
+Notes - notes for the program (can use this field for versioning)
+AppFile - can be uploaded alone or with other files
+MobilityFile - Mobile Project
+WebxPanelFile - web XPanel Project
+ProjectFile - TouchScreen Project
+CwsFile - CWS Config File for the program form-data
+StartNow - Used to restart a program by setting this to true
+StartLater - Not currently in-use
+
+curl -X PUT "https://[ServerURL]/VirtualControl/config/api/ProgramLibrary" \
+-H "accept: application/json" \
+-H "Authorization: [Token]"  \
+-H "Content-Type: multipart/form-data" \
+-d {"[Parameter]":"[Value]"}
+
+Example cURL Commandcurl -X PUT "https://123.456.789.000/VirtualControl/config/api/ProgramLibrary"  \
+-H "accept: application/json" \
+-H "Authorization: 1234567890" \
+-H "Content-Type: multipart/form-data" \
+-d {"ProgramId":"ProgramId1","FriendlyName":"Program011", "Notes":"For Testing"}
+
+Get All Programs
+curl -X GET "https://[ServerURL]/VirtualControl/config/api/ProgramLibrary" \
+-H "accept: application/json" \
+-H "Authorization: [Token]"
+Get Specific program
+curl -X GET "https://[ServerURL]/VirtualControl/config/api/ProgramLibrary/<ProgramId>" \
+-H "accept: application/json" \
+-H "Authorization: [Token]"
+
+Add New Room
+POST /VirtualControl/config/api/ProgramInstance
+Name - RoomName !required
+ProgramInstanceId - RoomId !required
+ProgramLibraryId - Program Library ID !required
+Notes - notes for the room
+Level - Access level of program
+Location - Location of room
+TimeZone - timezone
+Latitude - latitude
+Longitude - longitude
+AddressSetsLocation - Address used
+UserFile - custom user file
+
+curl -X POST "https://[ServerURL]/VirtualControl/config/api/ProgramInstance" \
+-H "accept: application/json" \
+-H "Authorization: [Token]" \
+-H "Content-Type: multipart/form-data" \
+-F "Name=ProgInstance1" \
+-F "ProgramInstanceId=PI1" \
+-F "ProgramLibraryId=Program01"
+
+Read all Rooms
+curl -X GET "https://[ServerURL]/VirtualControl/config/api/ProgramInstance" \
+-H "accept: application/json"
+-H "Authorization: [Token]"
+
+Modify Room
+ProgramInstanceId - ID of ProgramInstance !required
+curl -X PUT "https://[ServerURL]/VirtualControl/config/api/ProgramInstance" \
+-H "accept: application/json" \
+-H "Authorization: [Token]" \
+-H "Content-Type: multipart/form-data"
+-d {"ProgramInstanceId":"2", "Name":"ProgInstance1","Start":"true"}
