@@ -10,18 +10,41 @@
 <body>
   <h2>VC Configuration Page</h2>
   <div class="container">
+    <div id="not-ready"></div>
     <div>
       <label for="name">RoomID:</label>
       <h4 id="roomid"></h4>
-    </div>
-    <div>
       <label for="room">RoomName:</label>
       <h4 id="roomname"></h4>
-    </div>
-    <div>
       <label for="mtrkit">MTR Kit IP:</label>
       <h4 id="mtrkit"></h4>
     </div>
+    <form action="" method="post" >
+      <div>
+        <label for="sources"># of Inputs</label> <br>
+        <select name="sources" id="sources">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+        <br>
+        <label for="display">Display brand</label> <br>
+        <select name="display" id="display">
+          <option value="samsung">Samsung</option>
+          <option value="lg">LG</option>
+        </select>
+        <br>
+        <label for="roomtype">Room Setting</label> <br>
+        <select name="roomtype" id="roomtype">
+          <option value="single">Single</option>
+          <option value="dual">Dual</option>
+        </select>
+        <br><br>
+
+        <button type="submit" onclick="saveSettings()">Save Config</button>
+      </div>
+    </form>
   </div>
   <script src="js/cwsclient.js"></script>
 </body>

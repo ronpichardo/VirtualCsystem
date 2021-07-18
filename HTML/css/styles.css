@@ -1,4 +1,9 @@
 body {
   color: azure;
   background-color: #400095;
+  text-align: center;
+}
+
+.not-ready {
+  color: red;
 }
