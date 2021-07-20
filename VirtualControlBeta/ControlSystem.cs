@@ -58,7 +58,7 @@ namespace VirtualControlBeta
                 _cwsServer = new HttpCwsServer("");
                 //_cwsServer.ReceivedRequestEvent += _cwsServer_ReceivedRequestEvent;
                 var settingRoute = new HttpCwsRoute("settings");
-                settingRoute.RouteHandler = new ConfigSettingsReqHandler(conf.RoomId, conf.RoomName, conf.ShureIp);
+                settingRoute.RouteHandler = new ConfigSettingsReqHandler(conf.RoomId, conf.RoomName, conf.MtrIp,  conf.ShureIp);
                 _cwsServer.AddRoute(settingRoute);
 
                 var sourceRoute = new HttpCwsRoute("route");
